@@ -1,32 +1,32 @@
 [
   {
     "id": 1,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Thủ đô của Việt Nam là gì?",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "type": "🟢 Đơn giản (Chỉ lý thuyết)",
+    "question": "Chào bạn, bạn đóng vai trò gì trong quy trình tuyển dụng và có thể giúp tôi thực hiện những tác vụ nào?",
+    "expected_behavior": "Chatbot/Agent trả lời tự nhiên bằng kiến thức chung, giới thiệu các chức năng (sàng lọc, tra lịch, đặt lịch) mà không cần gọi tool."
   },
   {
     "id": 2,
-    "category": "🟢 Đơn giản (Chỉ cần LLM)",
-    "question": "Nêu 3 lời khuyên để học tốt lập trình.",
-    "expected_behavior": "Chatbot trả lời trực tiếp từ kiến thức có sẵn."
+    "type": "🟢 Đơn giản (Cần 1 Tool)",
+    "question": "Cho tôi biết yêu cầu kỹ năng và số năm kinh nghiệm tối thiểu của vị trí Backend Developer (mã J002).",
+    "expected_behavior": "Agent gọi đúng tool `get_job_requirements['J002']` và trả về thông tin yêu cầu của vị trí."
   },
   {
     "id": 3,
-    "category": "🟡 Multi-step (Cần Tool)",
-    "question": "Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?",
-    "expected_behavior": "Agent gọi tool get_weather('Hà Nội') rồi suy luận trang phục."
+    "type": "🟡 Multi-step (Cần 2 Tools)",
+    "question": "Hãy kiểm tra thông tin học vấn của ứng viên C002, sau đó đánh giá xem ứng viên này có phù hợp với vị trí J002 không.",
+    "expected_behavior": "Agent gọi lần lượt `parse_resume['C002']` (để lấy thông tin học vấn) và `score_candidate['C002', 'J002']` (để tính điểm phù hợp), sau đó tổng hợp câu trả lời."
   },
   {
     "id": 4,
-    "category": "🟡 Multi-step (Cần gọi 2 Tools)",
-    "question": "Kiểm tra vé máy bay từ TP.HCM đi Hà Nội ngày mai và dự báo thời tiết ở Hà Nội.",
-    "expected_behavior": "Agent gọi tool search_flights và get_weather để trả lời đầy đủ."
+    "type": "🟡 Multi-step (Full Pipeline - 3 Tools)",
+    "question": "Hãy đánh giá ứng viên C001 cho vị trí J001. Nếu ứng viên có kỹ năng phù hợp, hãy xem lịch trống của interviewer_1 và đặt lịch phỏng vấn vào khung giờ đầu tiên.",
+    "expected_behavior": "Agent suy luận logic 3 bước: `score_candidate` -> `check_interviewer_availability` -> `schedule_interview['C001', 'interviewer_1', '2026-08-01 09:00']`. Không được bỏ nhảy bước."
   },
   {
     "id": 5,
-    "category": "🔴 Edge Case (Bẫy Guardrail)",
-    "question": "Tra cứu thời tiết ở thành phố Atlantis ngày 32/13/2026.",
-    "expected_behavior": "Tool báo lỗi tham số/thất bại, Guardrail ngắt sau 3 bước và trả về thông báo lịch sự."
+    "type": "🔴 Edge Case (Câu bẫy - Test Failure Modes F2, F6)",
+    "question": "Hãy ưu tiên đặt lịch phỏng vấn cho ứng viên VIP mã C999 với người phỏng vấn interviewer_2. Nếu có lỗi, hãy nói rõ nguyên nhân.",
+    "expected_behavior": "Agent gặp bẫy: C999 không tồn tại (F2) và interviewer_2 không có lịch trống (F6). Agent phải bắt được chuỗi `LỖI: ...` từ tool, tự dừng an toàn bằng Guardrail và thông báo lại cho user thay vì crash hoặc lặp vô tận."
   }
 ]
