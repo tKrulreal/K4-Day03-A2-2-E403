@@ -26,12 +26,14 @@ if sys.stdout.encoding != "utf-8":
 # Import các thành phần từ file của Role 2 (Tools), Role 3 (Prompts) và Provider
 from tools import AVAILABLE_TOOLS  # Role 2
 from prompts import (
-    CHATBOT_BASELINE_PROMPT,  # Role 3
-    REACT_SYSTEM_PROMPT,      # Role 3 (dùng cho Mốc 3)
-    REACT_SYSTEM_PROMPT_V2,   # Role 3 (dùng cho Mốc 3)
+    CHATBOT_BASELINE_PROMPT,  # Role 3 - dùng cho Mốc 2
     MAX_ITERATIONS,           # Role 3 - Guardrail
 )
 from providers import get_llm_provider  # Multi-Provider Adapter
+
+# Re-export các prompt ReAct cho Mốc 3 (Role 4 sẽ dùng ở bước sau).
+# Hiện tại chưa dùng tới nhưng import sẵn để Mốc 3 chỉ cần thay stub.
+from prompts import REACT_SYSTEM_PROMPT, REACT_SYSTEM_PROMPT_V2  # noqa: F401  (Mốc 3)
 
 load_dotenv()
 
