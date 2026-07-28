@@ -28,5 +28,40 @@
     "type": "🔴 Edge Case (Câu bẫy - Test Failure Modes F2, F6)",
     "question": "Hãy ưu tiên đặt lịch phỏng vấn cho ứng viên VIP mã C999 với người phỏng vấn interviewer_2. Nếu có lỗi, hãy nói rõ nguyên nhân.",
     "expected_behavior": "Agent gặp bẫy: C999 không tồn tại (F2) và interviewer_2 không có lịch trống (F6). Agent phải bắt được chuỗi `LỖI: ...` từ tool, tự dừng an toàn bằng Guardrail và thông báo lại cho user thay vì crash hoặc lặp vô tận."
+  },
+  {
+    "id": 6,
+    "type": "🟢 Chống Ảo giác (Factual Grounding)",
+    "question": "Cho tôi biết chính xác số năm kinh nghiệm và học vấn của ứng viên mã C001. Đừng bịa thông tin nhé.",
+    "expected_baseline": "Chatbot xin lỗi vì không có dữ liệu thực tế, hoặc tệ hơn là bịa ra một profile giả (ảo giác).",
+    "expected_agent": "Gọi `parse_resume['C001']` và trả lời chính xác: Nguyễn Văn A, 2 năm kinh nghiệm, Cử nhân CNTT."
+  },
+  {
+    "id": 7,
+    "type": "🟡 Đánh giá So sánh (Logic & Math)",
+    "question": "So sánh mức độ phù hợp của hai ứng viên C001 và C003 cho vị trí Data Analyst (J001). Theo bạn, ai là người nên được ưu tiên gọi phỏng vấn hơn?",
+    "expected_baseline": "Chatbot đưa ra lời khuyên chung chung về cách tuyển dụng Data Analyst mà không có con số % cụ thể của ai.",
+    "expected_agent": "Gọi `score_candidate` lần lượt cho C001/J001 và C003/J001. So sánh điểm % và số năm kinh nghiệm thực tế để đưa ra kết luận (C001 nhỉnh hơn vì có 2 năm kinh nghiệm)."
+  },
+  {
+    "id": 8,
+    "type": "🔴 Rẽ nhánh Động (Test F5/F6 - Dynamic Routing)",
+    "question": "Tôi muốn đặt lịch phỏng vấn cho ứng viên C002 vào vị trí J002. Hãy kiểm tra lịch của interviewer_2 trước, nếu người này hết lịch trống thì tự động chuyển sang xem lịch của interviewer_1 và đặt vào slot đầu tiên có thể.",
+    "expected_baseline": "Chatbot có thể tự tin khẳng định 'Đã đặt lịch thành công với interviewer_2' (bịa 100%).",
+    "expected_agent": "Gọi `check_interviewer_availability['interviewer_2']`. Nhận kết quả LỖI (hết lịch). Tự động gọi tiếp `check_interviewer_availability['interviewer_1']` -> Lấy slot '2026-08-01 09:00' -> Gọi `schedule_interview`."
+  },
+  {
+    "id": 9,
+    "type": "🔴 Xử lý Lỗi Logic (Test F7 - Invalid Slot)",
+    "question": "Hãy đặt lịch phỏng vấn trực tiếp cho ứng viên C001 với interviewer_1 vào lúc '2026-10-10 10:00' (khung giờ tự bịa).",
+    "expected_baseline": "Chatbot vui vẻ trả lời 'Tôi đã lưu lịch phỏng vấn vào lúc 10:00 ngày 2026-10-10 cho bạn!'.",
+    "expected_agent": "Gọi `schedule_interview` với slot ảo. Tool trả về LỖI (Khung giờ không hợp lệ). Agent nhận ra lỗi, tự động gọi `check_interviewer_availability` để tìm giờ đúng, sau đó gợi ý lại cho user thay vì làm bừa."
+  },
+  {
+    "id": 10,
+    "type": "🔴 Quá tải / Thử thách Guardrail (Test F10 - Max Iterations)",
+    "question": "Hãy tra cứu hồ sơ và tính điểm của TẤT CẢ các ứng viên (C001, C002, C003) cho TẤT CẢ các vị trí (J001, J002). Ai điểm cao nhất thì đặt lịch ngay với interviewer_1.",
+    "expected_baseline": "Chatbot bịa ra một bảng kết quả dài ngoằng và báo đã đặt lịch xong xuôi trong 1 nốt nhạc.",
+    "expected_agent": "Agent bắt đầu đi vào vòng lặp gọi tool liên tục (6 lần score_candidate). Khi chạm mốc `MAX_ITERATIONS` (ví dụ: 3 hoặc 5 bước), Guardrail sẽ kích hoạt. Agent dừng lại an toàn và báo cáo: 'Tôi đã kiểm tra được C001 và C002, nhưng vì yêu cầu quá dài nên tôi tạm dừng. Bạn muốn tôi làm tiếp không?'"
   }
 ]
