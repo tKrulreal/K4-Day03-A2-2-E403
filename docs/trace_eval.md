@@ -7,11 +7,11 @@
 
 | Tiêu chí                   | Điểm (1-5) | Lý do đánh giá                                                                             |
 | :------------------------- | :--------: | :----------------------------------------------------------------------------------------- |
-| 🧠 **Multi-step Reasoning** |   `4/5`    | Phải: đọc CV → trích kỹ năng → so khớp JD → nếu đạt thì mới tra lịch trống → mới đặt lịch  |
+| 🧠 **Multi-step Reasoning** |   `5/5`    | Phải: đọc CV → trích kỹ năng → so khớp JD → nếu đạt thì mới tra lịch trống → mới đặt lịch  |
 | 🛠️ **Tool Interaction**     |   `5/5`    | Không thể bịa điểm match hay giờ trống lịch — bắt buộc tra cứu dữ liệu thật                |
-| 🔀 **Dynamic Decision**     |   `4/5`    | Kết quả match quyết định rẽ nhánh: đạt → đặt lịch; không đạt → từ chối lịch sự             |
-| ⏳ **Long Horizon**         |   `3/5`    | Quy trình 3-4 bước, có thể phải quay lại nếu giờ đề xuất bị trùng                          |
-| **TỔNG ĐIỂM FIT**          | **16/20**  | **KẾT LUẬN: 	Agentic Fit rất cao — chatbot thuần chắc chắn thất bại ở bước đặt lịch thật** |
+| 🔀 **Dynamic Decision**     |   `5/5`    | Kết quả match quyết định rẽ nhánh: đạt → đặt lịch; không đạt → từ chối lịch sự             |
+| ⏳ **Long Horizon**         |   `4/5`    | Quy trình 3-4 bước, có thể phải quay lại nếu giờ đề xuất bị trùng                          |
+| **TỔNG ĐIỂM FIT**          | **19/20**  | **KẾT LUẬN: 	Agentic Fit rất cao — chatbot thuần chắc chắn thất bại ở bước đặt lịch thật** |
 
 ---
 
