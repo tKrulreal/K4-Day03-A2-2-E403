@@ -40,9 +40,9 @@ from prompts import (
     SCORE_THRESHOLD_QUALIFIED,     # Role 3 - Ngưỡng đạt
     SCORE_THRESHOLD_MAYBE,         # Role 3 - Ngưỡng cân nhắc
     PII_BLACKLIST,                 # Role 3 - Từ khóa phải che
-    REACT_SYSTEM_PROMPT,           # Role 3 - V1
-    REACT_SYSTEM_PROMPT_V2,        # Role 3 - V2 (Self-Recovery + Anti-Loop)
-    render_for_test_case,          # Role 3 - Helper render prompt
+    REACT_SYSTEM_PROMPT,           # Role 3 - V1 (Self-Recovery + Anti-Loop + Few-Shot built-in)
+    render_react_prompt,           # Role 3 - Helper render ReAct prompt
+    render_chatbot_baseline_prompt, # Role 3 - Helper render baseline prompt
     render_safe_fallback,          # Role 3 - Helper render Safe Fallback
     SAFE_FALLBACK_MESSAGE,         # Role 3 - Template safe fallback
     WELCOME_MESSAGE,               # Role 3 - TC1 intro
@@ -705,13 +705,8 @@ def run_react_agent(
     print(f"\n🤖 [REACT AGENT{tag}] Câu hỏi: {user_query}")
     print(f"   Guardrails: MAX_ITERATIONS={MAX_ITERATIONS}, MAX_REPEATED_ACTIONS={MAX_REPEATED_ACTIONS}")
 
-    # Chuẩn bị system prompt
-    try:
-        system_prompt = render_for_test_case(tc_id, TOOL_SCHEMAS, version=version)
-    except ValueError:
-        # Nếu không tìm thấy TC cụ thể → render ReAct thẳng với user_query
-        from prompts import render_react_prompt
-        system_prompt = render_react_prompt(user_query, TOOL_SCHEMAS, version=version)
+    # Chuẩn bị system prompt — render_react_prompt(user_query, tool_descriptions)
+    system_prompt = render_react_prompt(user_query, TOOL_SCHEMAS)
 
     history: list[str] = [f"Question: {user_query}"]
     trace: list[dict] = []
