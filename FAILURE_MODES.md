@@ -36,36 +36,4 @@
 
 ---
 
-## 🎯 4 TIÊU CHÍ AGENTIC FIT (Scoring Matrix)
-
-| Tiêu chí | Điểm (1-5) | Lý do |
-|---|:---:|---|
-| 🧠 **Multi-step Reasoning** | 5/5 | Sàng lọc + match + đặt lịch + gửi mail = 4 bước phụ thuộc |
-| 🛠️ **Tool Interaction** | 5/5 | Cần DB ứng viên, scheduler, mail service |
-| 🔀 **Dynamic Decision** | 4/5 | Kết quả score quyết định có nên hẹn PV hay không |
-| ⏳ **Long Horizon** | 4/5 | Workflow 2-5 bước, vừa phải |
-| **TỔNG** | **18/20** | **RẤT NÊN DÙNG REACT AGENT** |
-
----
-
-## 🛡️ GUARDRAILS ĐÃ CÀI TRONG `src/prompts.py`
-
-```python
-MAX_ITERATIONS = 5              # Phanh cứng
-MAX_REPEATED_ACTIONS = 2        # Anti-loop
-SCORE_THRESHOLD_QUALIFIED = 70  # Phân loại recommend/reject
-SCORE_THRESHOLD_MAYBE = 50      # Vùng xám → cần Manager
-PII_BLACKLIST = (
-    "cmnd", "cccd", "passport",
-    "số tài khoản", "mức lương cũ", "current salary"
-)
-```
-
----
-
-
-
-> **Quy ước bàn giao**:
-> - Role 2 (Tool Engineer) → Cài error handling sao cho **mọi exception đều trả về chuỗi `"LỖI <MÃ>: <message>"`** thay vì `raise`.
-> - Role 4 (Integrator) → Dùng hàm `render_react_prompt(..., version="v2")` để có đầy đủ Guardrails.
-> - Role 5 (Observability) → Khi thấy Observation bắt đầu bằng `"LỖI"`, ghi nhận là **1 lần trigger Guardrail**.
+→ Khi thấy Observation bắt đầu bằng `"LỖI"`, ghi nhận là **1 lần trigger Guardrail**.
