@@ -63,5 +63,35 @@
     "question": "Hãy tra cứu hồ sơ và tính điểm của TẤT CẢ các ứng viên (C001, C002, C003) cho TẤT CẢ các vị trí (J001, J002). Ai điểm cao nhất thì đặt lịch ngay với interviewer_1.",
     "expected_baseline": "Chatbot bịa ra một bảng kết quả dài ngoằng và báo đã đặt lịch xong xuôi trong 1 nốt nhạc.",
     "expected_agent": "Agent bắt đầu đi vào vòng lặp gọi tool liên tục (6 lần score_candidate). Khi chạm mốc `MAX_ITERATIONS` (ví dụ: 3 hoặc 5 bước), Guardrail sẽ kích hoạt. Agent dừng lại an toàn và báo cáo: 'Tôi đã kiểm tra được C001 và C002, nhưng vì yêu cầu quá dài nên tôi tạm dừng. Bạn muốn tôi làm tiếp không?'"
+  },
+  {
+    "id": 11,
+    "type": "🟢 Đơn giản (Không cần Tool - Ưu thế của Chatbot)",
+    "question": "Hãy viết giúp tôi một mẫu email lịch sự để từ chối ứng viên sau vòng phỏng vấn vì họ chưa đủ kinh nghiệm thực tế.",
+    "expected_behavior": "Chatbot hoàn thành xuất sắc vì đây là tác vụ xử lý ngôn ngữ tự nhiên (NLG) thuần túy. Agent có thể bị 'overkill' (cố gắng tìm tool gửi email rồi mới phát hiện không có)."
+  },
+  {
+    "id": 12,
+    "type": "🟢 Đơn giản (Lý thuyết HR - Chatbot làm tốt)",
+    "question": "Theo kinh nghiệm của bạn, một lập trình viên Backend (như Java, Spring Boot) thường cần những kỹ năng mềm nào để làm việc nhóm hiệu quả?",
+    "expected_behavior": "Chatbot sẽ trả lời rất tốt dựa trên kiến thức được pre-train mà không cần bất kỳ context hay tool nào từ database nội bộ."
+  },
+  {
+    "id": 13,
+    "type": "🟡 Multi-step (Rẽ nhánh điều kiện Logic)",
+    "question": "Hãy đánh giá hồ sơ ứng viên C003 cho vị trí Data Analyst (J001). Nếu ứng viên chưa đủ số năm kinh nghiệm tối thiểu, hãy đưa ra lời khuyên cải thiện thay vì cố gắng đặt lịch phỏng vấn.",
+    "expected_behavior": "Agent gọi `score_candidate['C003', 'J001']`. Tool trả về kết quả 'Kinh nghiệm: Chưa đủ' (vì C003 có 1 năm, J001 yêu cầu 1 năm -> *Khoan, check lại dữ liệu: C003 có 1 năm, J001 yêu cầu 1 năm, vậy là ĐỦ. Vậy Agent phải nhận diện là đủ và có thể đặt lịch. Nhưng nếu người dùng hỏi vậy, Agent phải dựa vào text của tool*). Agent phải đọc kỹ Observation ('Đủ' hay 'Chưa đủ') để quyết định Action tiếp theo, không được nhắm mắt làm bừa."
+  },
+  {
+    "id": 14,
+    "type": "🔴 Edge Case (Bẫy Slot không tồn tại - F7)",
+    "question": "Tôi muốn đặt lịch phỏng vấn ngay cho ứng viên C001 với interviewer_1 vào lúc 22:00 đêm (2026-08-01 22:00).",
+    "expected_behavior": "Agent gọi `schedule_interview` với slot '2026-08-01 22:00'. Tool sẽ trả về `LỖI: Khung giờ ... không hợp lệ`. Agent đọc được lỗi, phải xin lỗi user và gọi `check_interviewer_availability` để gợi ý lại các khung giờ hợp lệ ban ngày."
+  },
+  {
+    "id": 15,
+    "type": "🔴 Edge Case (Ảo giác Tool / Unknown Tool - F1)",
+    "question": "Hãy tra cứu thông tin ứng viên C002, sau đó gửi một email tự động đến cho cô ấy để mời phỏng vấn nhé.",
+    "expected_behavior": "Agent gọi `parse_resume['C002']` thành công. Sau đó, LLM có thể bị 'ảo giác' cố gọi một tool như `send_email['C002']`. System sẽ báo `LỖI UNKNOWN_TOOL`. Agent V2 phải nhận ra mình chỉ có quyền quản lý lịch, không có công cụ gửi email, và phản hồi thành thật với user."
   }
 ]
