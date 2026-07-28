@@ -1,0 +1,80 @@
+%% ============================================================================
+%% Hybrid Flowchart: Chatbot Path vs ReAct Agent Path
+%% Đề tài 9: Trợ Lý Sàng Lọc Hồ Sơ Tuyển Dụng & Hẹn Phỏng Vấn
+%% Role 4 (Core Developer / Integrator) — Mốc 4
+%% ============================================================================
+
+flowchart TD
+    Start([👤 User gửi câu hỏi HR]) --> Classify{🔍 Câu hỏi có chứa<br/>ID cụ thể?<br/>C0xx / J0xx / interviewer_x}
+
+    %% ============ CHATBOT PATH ============
+    Classify -- "❌ Không có ID<br/>(chào hỏi, lý thuyết,<br/>soft skills, email mẫu)" --> ChatbotPath
+
+    subgraph ChatbotPath[" "]
+        direction TB
+        C1[🤖 CHATBOT BASELINE<br/>Mốc 2 — CHATBOT_BASELINE_PROMPT]
+        C2[1 LLM call duy nhất<br/>KHÔNG có tool]
+        C3[Final Answer là text tự nhiên]
+        C1 --> C2 --> C3
+    end
+
+    C3 --> Log1[/"📝 Trace Log<br/>docs/trace_eval.md<br/>Section 2 — Baseline"/]
+    Log1 --> End([🏁 Kết thúc])
+
+    %% ============ REACT PATH ============
+    Classify -- "✅ Có ID<br/>(C001, J002, ...)" --> ToolCount{Số tool<br/>cần dùng?}
+
+    ToolCount -- "1 tool<br/>(get_job_requirements,<br/>parse_resume)" --> ReActV1
+    ToolCount -- "2-3 tools<br/>(multi-step pipeline)" --> ReActV2
+    ToolCount -- "Quá phức tạp<br/>(nhiều cặp ứng viên-job)" --> Overload
+
+    subgraph ReActV1[" "]
+        direction TB
+        R1[🤖 REACT AGENT V1<br/>REACT_SYSTEM_PROMPT]
+        R2[Loop: Thought → Action → Observation<br/>MAX_ITERATIONS = 5]
+        R3[Tool call → parse JSON args]
+        R4[Có Final Answer → kết thúc]
+        R1 --> R2 --> R3 --> R4
+    end
+
+    subgraph ReActV2[" "]
+        direction TB
+        RV1[🤖 REACT AGENT V2<br/>REACT_SYSTEM_PROMPT_V2<br/>Self-Recovery + Anti-Loop + Few-Shot]
+        RV2[Loop: Thought → Action → Observation<br/>MAX_ITERATIONS = 5]
+        RV3[Anti-Loop guardrail<br/>MAX_REPEATED_ACTIONS = 2]
+        RV4[Self-Recovery on F1/F2/F6/F7]
+        RV5[PII Filter trên Final Answer]
+        RV6[Có Final Answer hoặc Safe Fallback]
+        RV1 --> RV2 --> RV3 --> RV4 --> RV5 --> RV6
+    end
+
+    subgraph Overload[" "]
+        direction TB
+        O1[⚠️ MAX_ITERATIONS = 5<br/>đạt trước khi tìm được max]
+        O2[Trigger Safe Fallback<br/>render_safe_fallback]
+        O3[Trả về tóm tắt<br/>observations đã thu thập]
+        O1 --> O2 --> O3
+    end
+
+    R4 --> TraceEval
+    RV6 --> TraceEval
+    O3 --> TraceEval
+
+    %% ============ TRACE LOG ============
+    TraceEval[/"📝 Trace Log<br/>docs/trace_eval.md<br/>Section 3 — ReAct"/]
+    TraceEval --> End
+
+    %% ============ STYLES ============
+    classDef chatbot fill:#dbeafe,stroke:#1e40af,stroke-width:2px,color:#1e3a8a
+    classDef reactV1 fill:#fed7aa,stroke:#c2410c,stroke-width:2px,color:#7c2d12
+    classDef reactV2 fill:#fdba74,stroke:#9a3412,stroke-width:3px,color:#7c2d12
+    classDef guardrail fill:#fecaca,stroke:#b91c1c,stroke-width:2px,color:#7f1d1d
+    classDef neutral fill:#f3f4f6,stroke:#374151,stroke-width:1px,color:#1f2937
+    classDef terminal fill:#d1fae5,stroke:#047857,stroke-width:2px,color:#064e3b
+
+    class C1,C2,C3 chatbot
+    class R1,R2,R3,R4 reactV1
+    class RV1,RV2,RV3,RV4,RV5,RV6 reactV2
+    class O1,O2,O3 guardrail
+    class Classify,ToolCount,TraceEval,Log1 neutral
+    class Start,End terminal
