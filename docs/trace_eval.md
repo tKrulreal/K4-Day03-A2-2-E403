@@ -5,17 +5,17 @@
 
 ## 🎯 1. BẢNG CHẤM ĐIỂM AGENTIC FIT (SCORING MATRIX)
 
-| Tiêu chí | Điểm (1-5) | Lý do đánh giá |
-| :--- | :---: | :--- |
-| 🧠 **Multi-step Reasoning** | `4/5` | Cần suy luận từ tra cứu thời tiết đến chọn trang phục. |
-| 🛠️ **Tool Interaction** | `5/5` | Cần tra cứu dữ liệu thời gian thực qua API thời tiết/chuyến bay. |
-| 🔀 **Dynamic Decision** | `4/5` | Kết quả bước trước quyết định hành động bước sau. |
-| ⏳ **Long Horizon** | `3/5` | Quy trình gồm 2-3 bước xử lý ngắn. |
-| **TỔNG ĐIỂM FIT** | **16/20** | **KẾT LUẬN: BÀI TOÁN RẤT NÊN DÙNG REACT AGENT!** |
+| Tiêu chí                   | Điểm (1-5) | Lý do đánh giá                                                                             |
+| :------------------------- | :--------: | :----------------------------------------------------------------------------------------- |
+| 🧠 **Multi-step Reasoning** |   `4/5`    | Phải: đọc CV → trích kỹ năng → so khớp JD → nếu đạt thì mới tra lịch trống → mới đặt lịch  |
+| 🛠️ **Tool Interaction**     |   `5/5`    | Không thể bịa điểm match hay giờ trống lịch — bắt buộc tra cứu dữ liệu thật                |
+| 🔀 **Dynamic Decision**     |   `4/5`    | Kết quả match quyết định rẽ nhánh: đạt → đặt lịch; không đạt → từ chối lịch sự             |
+| ⏳ **Long Horizon**         |   `3/5`    | Quy trình 3-4 bước, có thể phải quay lại nếu giờ đề xuất bị trùng                          |
+| **TỔNG ĐIỂM FIT**          | **16/20**  | **KẾT LUẬN: 	Agentic Fit rất cao — chatbot thuần chắc chắn thất bại ở bước đặt lịch thật** |
 
 ---
 
-## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
+<!-- ## 🔍 2. SO SÁNH PHẢN HỒI (TEST CASE #3)
 
 **Câu hỏi**: *"Thời tiết ở Hà Nội hôm nay thế nào và tôi nên mặc gì đi chơi?"*
 
@@ -29,4 +29,4 @@
 * **Observation 1**: `Thời tiết Hà Nội: 28°C, Nắng nhẹ, Độ ẩm 65%.`
 * **Thought 2**: Đã có thông tin 28°C nắng nhẹ, đưa ra lời khuyên trang phục.
 * **Final Answer**: *"Thời tiết Hà Nội hôm nay 28°C, nắng nhẹ. Bạn nên mặc quần áo thoáng mát!"*
-* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ.
+* **Nhận xét**: Hoàn thành xuất sắc nhiệm vụ nhờ sự kết hợp giữa suy luận và công cụ. -->
