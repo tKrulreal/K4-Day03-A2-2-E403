@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 🛠️ TOOL REGISTRY & SCHEMAS (Dành cho Role 2: Tool & Spec Engineer)
 Đề tài: Sàng lọc Hồ sơ Tuyển dụng & Hẹn Phỏng vấn

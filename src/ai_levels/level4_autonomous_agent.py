@@ -1,41 +1,55 @@
 """
 🚀 CẤP ĐỘ 4: AUTONOMOUS AGENT (Agent tự chủ với Planning & Memory)
-Tự chia nhỏ mục tiêu phức tạp thành nhiều bước, duy trì bộ nhớ (Memory) và tự đánh giá tiến độ.
+Tự chia nhỏ mục tiêu phức tạp thành nhiều bước, duy trì bộ nhớ (Memory)
+và tự đánh giá tiến độ.
+
+Đề tài: Trợ Lý Sàng Lọc Hồ Sơ Tuyển Dụng & Hẹn Phỏng Vấn (Chủ đề 9).
+Demo minh họa bonus Cấp 4 — kết hợp planning + memory cho Agent tuyển dụng.
 """
+
+import os
+import sys
+
+# Đảm bảo import được tools.py khi chạy độc lập từ src/ai_levels/
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from tools import parse_resume, get_job_requirements, score_candidate
+
 
 class AutonomousGoalAgent:
     def __init__(self, goal: str, max_steps: int = 4):
         self.goal = goal
         self.max_steps = max_steps
         self.memory = []  # Bộ nhớ lưu vết các bước đã thực hiện
-        
+
     def execute(self):
         print(f"🚀 === Bắt đầu Autonomous Goal: {self.goal} ===")
-        
+
         for step in range(1, self.max_steps + 1):
             print(f"\n--- Vòng lặp tự chủ Planning & Action (Step {step}/{self.max_steps}) ---")
-            
+
             if step == 1:
-                plan = "Bước 1: Tra cứu lịch rảnh và thời tiết điểm đến"
-                action = "Call Tool: get_weather('Hà Nội')"
-                result = "Hà Nội 28°C, nắng nhẹ."
+                plan = "Bước 1: Tra cứu yêu cầu của vị trí J002"
+                action = "Call Tool: get_job_requirements['J002']"
+                result = get_job_requirements("J002")
             elif step == 2:
-                plan = "Bước 2: Tìm chuyến bay phù hợp với ngân sách"
-                action = "Call Tool: search_flights('TP.HCM', 'Hà Nội')"
-                result = "Chuyến bay VN123 giá 1.500.000 VNĐ."
+                plan = "Bước 2: Đọc hồ sơ ứng viên C002"
+                action = "Call Tool: parse_resume['C002']"
+                result = parse_resume("C002")
             elif step == 3:
-                plan = "Bước 3: Tổng hợp lập lịch trình 3 ngày 2 đêm"
-                action = "Generate Itinerary"
-                result = "Lịch trình hoàn tất: Khách sạn + Quán cafe sống ảo."
+                plan = "Bước 3: Chấm điểm phù hợp giữa C002 và J002"
+                action = "Call Tool: score_candidate['C002', 'J002']"
+                result = score_candidate("C002", "J002")
             else:
                 print("🎯 [Goal Evaluation]: Mục tiêu đã hoàn thành 100%!")
                 break
-                
+
             self.memory.append({"step": step, "plan": plan, "result": result})
             print(f"📋 [Planning]: {plan}")
             print(f"🛠️ [Execution]: {action} ➔ {result}")
             print(f"💾 [Memory Saved]: Logged step {step} to memory.")
 
+
 if __name__ == "__main__":
-    agent = AutonomousGoalAgent("Lên kế hoạch du lịch Hà Nội 3 ngày 2 đêm")
+    agent = AutonomousGoalAgent("Tuyển dụng 1 Backend Developer cho vị trí J002")
     agent.execute()

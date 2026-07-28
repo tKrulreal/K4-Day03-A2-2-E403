@@ -132,11 +132,30 @@ class OpenRouterProvider(BaseLLMProvider):
 
 
 class MockProvider(BaseLLMProvider):
-    """Offline Mock Provider (Cho bài test không cần kết nối API)"""
+    """Offline Mock Provider (Cho bài test không cần kết nối API).
+
+    Mặc định trả về câu trả lời chung cho Chatbot Baseline (Mốc 2).
+    Đề tài: HR Assistant — Trợ Lý Sàng Lọc Hồ Sơ Tuyển Dụng & Hẹn Phỏng Vấn.
+    """
     def generate(self, prompt: str, system_prompt: str = "") -> str:
         text = prompt.lower()
-        if "thời tiết" in text and "hà nội" in text:
-            return "Thought: Cần tra cứu thời tiết Hà Nội.\nAction: get_weather['Hà Nội']"
+        # Nếu câu hỏi về vai trò -> trả lời giới thiệu
+        if "vai trò" in text or "giúp" in text or "làm được" in text:
+            return (
+                "👋 Xin chào! Tôi là **AI HR Assistant** - Trợ lý sàng lọc hồ sơ & hẹn phỏng vấn.\n"
+                "Tôi hỗ trợ 4 tác vụ chính:\n"
+                "  🔍 Sàng lọc & xếp hạng hồ sơ ứng viên theo vị trí\n"
+                "  📋 Tra cứu yêu cầu kỹ năng/kinh nghiệm của một vị trí\n"
+                "  🗓️ Kiểm tra lịch trống của người phỏng vấn\n"
+                "  ✅ Đặt lịch phỏng vấn cho ứng viên đủ điều kiện\n"
+                "[Mock Provider — offline mode]"
+            )
+        # Nếu câu hỏi về ứng viên/job cụ thể -> safe fallback
+        if any(k in text for k in ["c001", "c002", "c003", "c999", "j001", "j002", "interviewer"]):
+            return (
+                "🤖 [Mock Provider]: Tôi là chatbot thường không có quyền truy cập hệ thống HR. "
+                "Bạn nên dùng Trợ Lý Sàng Lọc Hồ Sơ (Agent có công cụ) để tra cứu chính xác."
+            )
         return "🤖 [Mock Provider]: Phản hồi giả lập offline cho bài test."
 
 
